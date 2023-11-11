@@ -1,8 +1,6 @@
-import {BaseProvider} from '@ethersproject/providers';
 import hre, { ethers } from "hardhat";
 import "@nomicfoundation/hardhat-ethers";
 import {SignerWithAddress} from "@nomicfoundation/hardhat-ethers/signers";
-import "@typechain/hardhat";
 import bodyParser from "body-parser";
 import * as Eta from "eta";
 import express, {Express, Request, Response} from 'express';
@@ -59,11 +57,7 @@ export class MetamaskClient {
             // hook hardhat's `ethers` object
             ethers.getSigners().then((signers: any[]) => {
                 let signer = signers[0];
-//                let f = signer.sendTransaction;
                 let x = async (transaction: any) => {
-//                    let out = await f.call(signer, transaction);
-//                    console.log(out);
-//                    return Promise.resolve(out);
                     let txId = this.id++;
                     console.log("Going to run transaction: " + txId);
                     if (this.estimateGas)
