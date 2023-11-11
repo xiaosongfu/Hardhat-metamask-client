@@ -60,6 +60,19 @@
             }
         }
 
+        function signer() {
+            if (account === undefined) {
+                showGlobalError(new Error("Please connect to MetaMask"));
+                return;
+            }
+
+            var xmlHttp = new XMLHttpRequest();
+            var url = "http://localhost:<%= it.serverPort %>/signer-result";
+            xmlHttp.open( "POST", url, false ); // false for synchronous request
+            xmlHttp.setRequestHeader("Content-Type", "application/json");
+            xmlHttp.send(JSON.stringify({address: account}));
+        }
+
         <% it.transactions.forEach(function(tx){ %>
             async function sendTransaction<%= tx.id %>() {
                 const transactionParameters = {
@@ -217,8 +230,9 @@
     <div class="root">
         <div class="container">
             <span class="title">Running in <%= it.network %> network</span>
-            <button onclick="connect()" id='b1' class="myButton"> Connect to MetaMask</button>
+            <button onclick="connect()" class="myButton">Connect to MetaMask</button>
             <span id="wallet" class="subtitle"></span>
+            <button onclick="signer()" class="myButton">Set Signer</button>
             <% it.transactions.forEach(function(tx){ %>
             <div class="transitionBox">
                 <span class="transactionLabel"> Transaction <%= tx.id %></span>

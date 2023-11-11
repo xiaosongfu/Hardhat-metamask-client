@@ -27,6 +27,7 @@ export class MetamaskClient {
     private id = 1;
     private txHashMap = new Map<number, string>();
     server: any;
+    private signerAddress = "";
 
     constructor(private estimateGas: boolean = false, defaultServerPort: number = 8989) {
         const app: Express = express();
@@ -36,6 +37,11 @@ export class MetamaskClient {
 
         app.get('/send-transactions', (req: Request, res: Response) => {
             res.send(this.filledTemplate);
+        });
+
+        app.post('/signer-result', (req: Request, res: Response) => {
+            this.signerAddress = req.body.address;
+            res.sendStatus(200);
         });
 
         app.post('/transaction-result', (req: Request, res: Response) => {
@@ -79,6 +85,25 @@ export class MetamaskClient {
                     });
                 }
                 signer.sendTransaction = x as any;
+
+                let y = async () => {
+                    console.log("Going to get signer");
+                    return new Promise(async (resolve, reject) =>{
+                        let checkInterval = setInterval(async () => {
+                            console.log("Checking for signer...");
+                            if (this.signerAddress !== "") {
+                                console.log('Signer found: ', this.signerAddress);
+                                clearInterval(checkInterval); // Important to clear interval after the operation is done
+                                resolve(this.signerAddress);
+                            }
+                        }, 5000); // Repeat every 5 seconds
+
+                        // use same html page with transaction sending
+                        await this._sendTransactions([]);
+                    });
+                }
+                signer.getAddress = y as any;
+
                 resolve(signer);
             });
         });
