@@ -89,6 +89,11 @@ export class MetamaskClient {
 
                 let y = async () => {
                     console.log("Going to get signer");
+                    if (this.signerAddress !== "") {
+                        console.log('Signer found: ', this.signerAddress);
+                        return this.signerAddress;
+                    }
+
                     return new Promise(async (resolve, reject) =>{
                         let checkInterval = setInterval(async () => {
                             console.log("Checking for signer...");
@@ -97,7 +102,7 @@ export class MetamaskClient {
                                 clearInterval(checkInterval); // Important to clear interval after the operation is done
                                 resolve(this.signerAddress);
                             }
-                        }, 5000); // Repeat every 5 seconds
+                        }, 1000); // Repeat every 5 seconds
 
                         // use same html page with transaction sending
                         await this._sendTransactions([]);
