@@ -41,11 +41,13 @@ export class MetamaskClient {
 
         app.post('/signer-result', (req: Request, res: Response) => {
             this.signerAddress = req.body.address;
+            console.log(`Set Signer Success, signer address: ${this.signerAddress}`);
             res.sendStatus(200);
         });
 
         app.post('/transaction-result', (req: Request, res: Response) => {
             this.txHashMap.set(req.body.id, req.body.hash);
+            console.log(`Send Transaction Success, tx hash: ${ req.body.hash}`);
             res.sendStatus(200);
         });
 
@@ -76,9 +78,8 @@ export class MetamaskClient {
                             let hash = this.txHashMap.get(txId)!;
                             const tx = await signer.provider!.getTransaction(hash);
                             if (tx === null) return;
-                            console.log('Transaction');
                             let result = (signer.provider! as any)._wrapTransactionResponse(tx);
-                            console.log(result);
+                            //console.log(result);
                             clearInterval(checkInterval); // Important to clear interval after the operation is done
                             resolve(result);
                         }, 5000); // Repeat every 5 seconds
@@ -92,7 +93,7 @@ export class MetamaskClient {
                         let checkInterval = setInterval(async () => {
                             console.log("Checking for signer...");
                             if (this.signerAddress !== "") {
-                                console.log('Signer found: ', this.signerAddress);
+                                //console.log(this.signerAddress);
                                 clearInterval(checkInterval); // Important to clear interval after the operation is done
                                 resolve(this.signerAddress);
                             }
