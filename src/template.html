@@ -232,7 +232,9 @@
             <span class="title">Running in <%= it.network %> network</span>
             <button onclick="connect()" class="myButton">Connect to MetaMask</button>
             <span id="wallet" class="subtitle"></span>
+            <% if (it.transactions.length == 0) { %>
             <button onclick="signer()" class="myButton">Set Signer</button>
+            <% } %>
             <% it.transactions.forEach(function(tx){ %>
             <div class="transitionBox">
                 <span class="transactionLabel"> Transaction <%= tx.id %></span>
